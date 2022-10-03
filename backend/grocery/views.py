@@ -1,6 +1,5 @@
-import base64
+# import base64
 import json
-from PIL import Image
 from rest_framework.decorators import api_view
 from django.http.response import JsonResponse
 from rest_framework import status
@@ -230,7 +229,7 @@ def product_list(request):
             image_name = "media/yourlogo.png"
 
             # Convert Image to base64
-            # TODO: Fix Some Test Failing: If the Image name has spaces
+            # Fix Some Test Failing: If the Image name has spaces
             # with open(f"media/product_images/{image}", "rb") as our_image:
             #     # print(our_image)
             #     converted_string = base64.b64encode(our_image.read())
@@ -267,7 +266,7 @@ def product_list(request):
         field = {}
         products = dowellconnection("dowellstores", "bangalore", "dowellstores", "Product", "Product", "1132", "ABCDE",
                                     "fetch", field, "nil")
-        # TODO: Fix Error fetching the products over a browsable API
+        # Fix Error fetching the products over a browsable API
         data = json.loads(products)
         return Response(data["data"], status=status.HTTP_200_OK)
 
