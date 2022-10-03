@@ -8,6 +8,7 @@ class ProductCategory(models.Model):
     code = models.IntegerField(null=False)
     description = models.CharField(null=False, max_length=500)
     parent_code = models.IntegerField(null=False)
+    image = models.ImageField(null=True, upload_to='category/')
 
     def __str__(self):
         return self.name
@@ -20,7 +21,7 @@ class Product(models.Model):
     sku = models.CharField(max_length=225)
     description = models.CharField(max_length=500)
     price = models.FloatField()
-    image = models.ImageField(null=True, upload_to='product_images/')
+    image = models.ImageField(null=True, upload_to='product/')
     # category_id = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
 
     def __str__(self):
