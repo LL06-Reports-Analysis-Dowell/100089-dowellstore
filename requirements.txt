@@ -1,0 +1,9 @@
+django~=4.0
+djangorestframework
+pyyaml
+requests
+django-cors-headers
+pymongo
+Pillow
+django-rest-swagger
+drf_yasg

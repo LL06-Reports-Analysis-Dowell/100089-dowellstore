@@ -1,0 +1,316 @@
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dowell Stores Manager</title>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap"
+            rel="stylesheet"
+    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/manager.css' %}"/>
+    <style>
+        body {
+            font-family: 'Lato', sans-serif !important;
+        }
+    </style>
+    <script>
+        function previewFile(input) {
+            var file = $("input[type=file]").get(0).files[0];
+
+            if (file) {
+                var reader = new FileReader();
+
+                reader.onload = function () {
+                    $("#previewImg").attr("src", reader.result);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</head>
+<body class="h-100">
+<div class="container">
+    <main>
+        <div class="col-md-5 offset-md-4 pt-2">
+            <form class="needs-validation" novalidate action="" method="POST">
+                {% csrf_token %}
+
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <label for="brand_name" class="form-label">Brand Name</label>
+                        <input type="text" class="form-control" id="brand_name" placeholder="" value="" required>
+                        <div class="invalid-feedback">
+                            Brand Name is required.
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="industry" class="form-label">Industry</label>
+                        <select class="form-control" name="industry" id="industry">
+                            <option value="industry">-Industry-</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Industry is required.
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-2">
+
+                <div class="col-12">
+                    <label for="about" class="form-label">Enter Branch Name, Country, City, Latitude, Longitude and
+                        Currency</label>
+                    <div class="input-group has-validation">
+                        <textarea class="form-control" cols="5" rows="2" name="about" id="about">
+                        </textarea>
+                        <div class="invalid-feedback">
+                            Info is required.
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-2">
+
+                <div class="col-12">
+                    <label class="form-label">Event Delivery Type</label>
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <div class="form-check">
+                                <input name="event_delivery_type" id="Takeaway" type="checkbox" class="form-check-input" checked
+                                       required>
+                                <label for="Takeaway" class="form-check-label">Takeaway</label>
+                            </div>
+                        </li>
+                        <li class="list-inline-item">
+                            <div class="form-check">
+                                <input name="event_delivery_type" type="checkbox" class="form-check-input" checked required>
+                                <label class="form-check-label">Dine-In</label>
+                            </div>
+                        </li>
+                        <li class="list-inline-item">
+                            <div class="form-check">
+                                <input name="event_delivery_type" type="checkbox" class="form-check-input" checked required>
+                                <label class="form-check-label">Home Delivery</label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <hr class="my-2">
+
+                <div class="row ">
+                    <label class="form-label">Event Menu Type</label>
+                    <div class="col-sm-6">
+                        <div class="form-check">
+                            <input name="event_menu_type" type="checkbox" class="form-check-input" checked required>
+                            <label class="form-check-label">Breakfast Menu</label>
+                        </div>
+                        <div class="form-check">
+                            <input name="event_menu_type" type="checkbox" class="form-check-input" checked required>
+                            <label class="form-check-label">Lunch Menu</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-check">
+                            <input name="Dinner Menu" type="checkbox" class="form-check-input" checked required>
+                            <label class="form-check-label">Dinner Menu</label>
+                        </div>
+                        <div class="form-check">
+                            <input name="All Day Menu" type="checkbox" class="form-check-input" checked required>
+                            <label class="form-check-label">All Day Menu</label>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-2">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label class="label">Delivery Counters</label>
+                        <ul class="list-inline">
+                            <li class="list-inline-item">
+                                <div class="form-check">
+                                    <input name="1" type="checkbox" class="form-check-input"
+                                           checked required>
+                                    <label class="form-check-label">1</label>
+                                </div>
+                            </li>
+                            <li class="list-inline-item">
+                                <div class="form-check">
+                                    <input name="2" type="checkbox" class="form-check-input"
+                                           checked required>
+                                    <label class="form-check-label">2</label>
+                                </div>
+                            </li>
+                            <li class="list-inline-item">
+                                <div class="form-check">
+                                    <input name="3" type="checkbox" class="form-check-input"
+                                           checked required>
+                                    <label class="form-check-label">3</label>
+                                </div>
+                            </li>
+                            <li class="list-inline-item">
+                                <div class="form-check">
+                                    <input name="4" type="checkbox" class="form-check-input"
+                                           checked required>
+                                    <label class="form-check-label">4</label>
+                                </div>
+                            </li>
+                            <li class="list-inline-item">
+                                <div class="form-check">
+                                    <input name="5" type="checkbox" class="form-check-input"
+                                           checked required>
+                                    <label class="form-check-label">5</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-check">
+                            <input name="Common Q" type="radio" class="form-check-input" checked required>
+                            <label class="form-check-label">Common Q</label>
+                        </div>
+                        <div class="form-check">
+                            <input name="Counter Q" type="radio" class="form-check-input" checked required>
+                            <label class="form-check-label">Counter Q</label>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-2">
+
+                <div class="col-12">
+                    <label class="label">Repeat Menu</label>
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <div class="form-check">
+                                <input name="Everyday" type="radio" class="form-check-input"
+                                       checked required>
+                                <label class="form-check-label">Everyday</label>
+                            </div>
+                        </li>
+                        <li class="list-inline-item">
+                            <div class="form-check">
+                                <input name="No Repeat" type="radio" class="form-check-input"
+                                       checked required>
+                                <label class="form-check-label">No Repeat</label>
+                            </div>
+                    </ul>
+                </div>
+
+                <hr class="my-2">
+
+                <div class="row">
+                    <label class="form-label">Select Language Options for customers.</label>
+                    <div class="col-sm-6">
+                        <div class="form-check">
+                            <input name="English" type="checkbox" class="form-check-input">
+                            <label class="form-check-label">English</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input name="Chinese" type="checkbox" class="form-check-input">
+                            <label class="form-check-label">Chinese</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-check">
+                            <input name="Thai" type="checkbox" class="form-check-input">
+                            <label class="form-check-label">Thai</label>
+                        </div>
+                        <div class="form-check">
+                            <input name="Japanese" type="checkbox" class="form-check-input" id="save-info">
+                            <label class="form-check-label">Japanese</label>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-2">
+
+                <div class="col-12">
+                    <label class="form-label">Select Payment Option to Connect</label>
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <div class="form-check">
+                                <input name="Scan QR code " type="checkbox" class="form-check-input" checked required>
+                                <label class="form-check-label">Scan QR <br/>code</label>
+                            </div>
+                        </li>
+                        <li class="list-inline-item">
+                            <div class="form-check">
+                                <input name="Cash Counter" type="checkbox" class="form-check-input" checked required>
+                                <label class="form-check-label">Cash <br/> Counter</label>
+                            </div>
+                        </li>
+                        <li class="list-inline-item">
+                            <div class="form-check">
+                                <input name="Pay Online" type="checkbox" class="form-check-input" checked required>
+                                <label class="form-check-label">Pay <br/>Online</label>
+                            </div>
+                        </li>
+                        <li class="list-inline-item">
+                            <div class="form-check">
+                                <input name="Payment App" type="checkbox" class="form-check-input" checked required>
+                                <label class="form-check-label">Payment <br/> App</label>
+                            </div>
+                        </li>
+                        <li class="list-inline-item">
+                            <div class="form-check">
+                                <input name="Pay with Membership" type="checkbox" class="form-check-input" checked
+                                       required>
+                                <label class="form-check-label">Pay with <br/>Membership</label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <hr class="my-2">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <img
+                                width="50px"
+                                height="50px"
+                                id="previewImg"
+                                src="/static/img/dowell.jpeg"
+                                class="rounded-circle"
+                                alt="your logo"
+                        />
+                        <small class="">Logo uploaded.</small>
+                    </div>
+                    <div class="col-sm-6">
+                        <span class="btn btn-success btn-file">upload new...<input
+                                type="file"
+                                name="brand_picture"
+                                id="photofile"
+                                accept="image/*;capture=camera"
+                                onchange="previewFile(this);"
+                                required
+                        /> </span>
+                    </div>
+                </div>
+
+                <hr class="my-2">
+
+                <div class="text-center pb-5">
+                    <p>Home Page Link( Landing Page)</p>
+                    <button class="btn btn-success">
+                        Download QR code
+                    </button>
+                    <button class="btn btn-success">
+                        Copy Link
+                    </button>
+                    <button class="btn btn-success" type="submit">
+                        Create New
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>
