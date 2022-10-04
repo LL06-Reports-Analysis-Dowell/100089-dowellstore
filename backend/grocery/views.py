@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from .dowellconnection1 import dowellconnection
 from .models import Product, ProductCategory
 
+# Home Routes ------------------------------------------------------------------
 
 def api_home(request):
     return JsonResponse(
@@ -14,7 +15,6 @@ def api_home(request):
             "message": "The API Endpoint is Up"
         }
     )
-
 
 @api_view(['GET', 'POST'])
 def hello_world(request):
@@ -92,12 +92,22 @@ def category_detail(request, pk):
         name = request.data["name"]
         code = request.data["code"]
         description = request.data["description"]
+        # Handle Product Image
+        if 'category_image' in request.FILES.keys():
+            image = request.FILES['category_image']
+            product = ProductCategory(image=image, name=name, description=description, code=code)
+            ProductCategory.save(product)
+
+            image_name = f"media/category/{image}"
+        else:
+            image_name = "media/yourlogo.png"
 
         update_category = {
             "name": name,
             "code": code,
             "category_id": pk,
             "description": description,
+            "image": image_name
         }
 
         res = dowellconnection("dowellstores", "bangalore", "dowellstores", "ProductCategory", "ProductCategory",
@@ -185,6 +195,15 @@ def sub_category_detail(request, pk):
         code = request.data["code"]
         description = request.data["description"]
         parent_code = request.data["parent_code"]
+        # Handle Image
+        if 'sub_image' in request.FILES.keys():
+            image = request.FILES['sub_image']
+            product = ProductCategory(image=image, name=sub_name, description=description, code=code)
+            ProductCategory.save(product)
+
+            image_name = f"media/category/{image}"
+        else:
+            image_name = "media/yourlogo.png"
 
         update_sub_category = {
             "name": sub_name,
@@ -266,7 +285,6 @@ def product_list(request):
         field = {}
         products = dowellconnection("dowellstores", "bangalore", "dowellstores", "Product", "Product", "1132", "ABCDE",
                                     "fetch", field, "nil")
-        # Fix Error fetching the products over a browsable API
         data = json.loads(products)
         return Response(data["data"], status=status.HTTP_200_OK)
 
@@ -291,7 +309,16 @@ def product_detail(request, pk):
         description = request.data['description']
         price = request.data['price']
         category_id = request.data['category_id']
-        image = request.data['image']
+        
+        # Handle Product Image
+        if 'image' in request.FILES.keys():
+            image = request.FILES['image']
+            product = Product(image=image, sku=sku, description=description, price=price)
+            Product.save(product)
+
+            image_name = f"media/product/{image}"
+        else:
+            image_name = "media/yourlogo.png"
 
         update_product = {
             "product_id": pk,
@@ -300,7 +327,7 @@ def product_detail(request, pk):
             "sku": sku,
             "description": description,
             "price": price,
-            "image": image
+            "image": image_name
         }
 
         product = dowellconnection("dowellstores", "bangalore", "dowellstores", "Product", "Product", "1132", "ABCDE",
@@ -317,8 +344,8 @@ def product_detail(request, pk):
 
 @api_view(['GET'])
 def product_in_category(request, pk, product_pk):
-    cat = str(pk)
-    print(type(cat))
+    # cat = str(pk)
+    # print(type(cat))
     field = {
         "category_id": pk,
         "product_id": product_pk
