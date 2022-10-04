@@ -1,9 +1,13 @@
 # import base64
 import json
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from rest_framework.decorators import api_view
 from django.http.response import JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
+
+from .serializers import ProductCategorySerializer
 from .dowellconnection1 import dowellconnection
 from .models import Product, ProductCategory
 
@@ -17,6 +21,7 @@ def api_home(request):
     )
 
 @api_view(['GET', 'POST'])
+
 def hello_world(request):
     return Response({
         "Message": "API decorators"
@@ -27,6 +32,7 @@ def hello_world(request):
 
 @api_view(['GET', 'POST'])
 def category_list(request):
+   
     if request.method == 'POST':
         name = request.data["name"]
         code = request.data["code"]
@@ -74,14 +80,16 @@ def category_list(request):
         categories = dowellconnection("dowellstores", "bangalore", "dowellstores", "ProductCategory", "ProductCategory",
                                       "1133", "ABCDE", "fetch", field, "nil")
         data = json.loads(categories)
-        return Response(data["data"])
+        return Response(data["data"], status=status.HTTP_200_OK)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def category_detail(request, pk):
+def category_detail(request, pk): 
+   
     field = {
         "category_id": int(pk)
     }
+
     if request.method == 'GET':
         category = dowellconnection("dowellstores", "bangalore", "dowellstores", "ProductCategory", "ProductCategory",
                                     "1133", "ABCDE", "fetch", field, "nil")
@@ -126,6 +134,9 @@ def category_detail(request, pk):
 
 @api_view(['GET', 'POST'])
 def sub_category_list(request):
+    """
+    This API endpoint allows creation and listing of sub-Categories.
+    """
     if request.method == 'POST':
         name = request.data["name"]
         code = request.data["code"]
@@ -181,6 +192,7 @@ def sub_category_list(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def sub_category_detail(request, pk):
+  
     field = {
         "sub_category_id": pk
     }
@@ -228,8 +240,16 @@ def sub_category_detail(request, pk):
 
 # PRODUCT --------------------------------------------------
 
+
 @api_view(['GET', 'POST'])
 def product_list(request):
+    """
+    get:
+    Product List
+    
+    post:
+    Create a new Product.
+    """
     if request.method == 'POST':
         name = request.data['name']
         sku = request.data['sku']
@@ -291,6 +311,18 @@ def product_list(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def product_detail(request, pk):
+
+    """
+    get:
+    Retrieve a product
+
+    put:
+    Update a product
+
+    delete:
+    Remove a product
+
+    """
     field = {
         "product_id": pk
     }

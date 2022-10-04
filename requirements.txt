@@ -5,6 +5,6 @@ requests
 django-cors-headers
 pymongo
 Pillow
-django-rest-swagger
+drf_yasg
 pep8
 djangorestframework-simplejwt
