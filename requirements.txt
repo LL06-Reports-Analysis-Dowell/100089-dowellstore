@@ -7,4 +7,4 @@ pymongo
 Pillow
 django-rest-swagger
 pep8
-rest_framework_simplejwt
+djangorestframework-simplejwt
