@@ -1,4 +1,7 @@
 # 100089-dowellstore
 
-API docs:
-[Stores API](https://documenter.getpostman.com/view/17474568/2s83zcSS9m)
+## API docs:
+
+[Catalog API Documentation](https://documenter.getpostman.com/view/17474568/2s83zmLMvG)
+
+[Customer API Documentation](https://documenter.getpostman.com/view/17474568/2s83zmLMzf)
