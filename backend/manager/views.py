@@ -130,7 +130,7 @@ def vendor_list(request):
         if len(json_data["data"]) < 1:
 
             return Response(
-                {"message": "No customers were found"}, status=status.HTTP_404_NOT_FOUND
+                {"message": "No vendors were found"}, status=status.HTTP_404_NOT_FOUND
             )
 
         elif len(json_data["data"]) >= 1:
@@ -210,7 +210,7 @@ def vendor_detail(request, pk):
         if len(json_data["data"]) < 1:
 
             return Response(
-                {"message": "Profile Requested Not Found!"},
+                {"message": "Vendor Profile Requested Not Found!"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 

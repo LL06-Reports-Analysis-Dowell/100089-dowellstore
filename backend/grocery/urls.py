@@ -19,4 +19,6 @@ urlpatterns = [
         views.sub_category_detail,
         name="sub_category_detail",
     ),
+    path("related-products/", views.related_product_list, name="related_products"),
+    path("pricing-history/", views.pricing_history_list, name="pricing-history")
 ]

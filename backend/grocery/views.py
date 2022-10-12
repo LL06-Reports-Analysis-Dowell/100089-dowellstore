@@ -687,6 +687,8 @@ def product_in_category(request, pk, product_pk):
             )
 
 
+# RELATED PRODUCT ----------------------------------------------------------------------
+
 @api_view(["GET", "POST"])
 def related_product_list(request):
 
@@ -765,6 +767,8 @@ def related_product_list(request):
             )
 
 
+
+
 # PRICING HISTORY ----------------------------------------------------------------------------------------------------
 @api_view(["GET", "POST"])
 def pricing_history_list(request):
@@ -835,7 +839,7 @@ def pricing_history_list(request):
 
         if len(json_data["data"]) < 1:
 
-            return Response({"message": "No pricing history were found"})
+            return Response({"message": "No pricing history was found"})
 
         elif len(json_data["data"]) >= 1:
 
