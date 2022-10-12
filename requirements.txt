@@ -8,3 +8,4 @@ Pillow
 drf_yasg
 pep8
 djangorestframework-simplejwt
+pyjwt

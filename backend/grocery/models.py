@@ -3,12 +3,13 @@ from django.db import models
 
 #  PRODUCT CATEGORY
 
+
 class ProductCategory(models.Model):
     name = models.TextField(null=False, max_length=225)
     code = models.IntegerField(null=False)
     description = models.CharField(null=False, max_length=500)
     parent_code = models.IntegerField(null=False)
-    image = models.ImageField(null=True, upload_to='category/')
+    image = models.ImageField(null=True, upload_to="category/")
 
     def __str__(self):
         return self.name
@@ -16,12 +17,13 @@ class ProductCategory(models.Model):
 
 # PRODUCT
 
+
 class Product(models.Model):
     name = models.TextField(max_length=225)
     sku = models.CharField(max_length=225)
     description = models.CharField(max_length=500)
     price = models.FloatField()
-    image = models.ImageField(null=True, upload_to='product/')
+    image = models.ImageField(null=True, upload_to="product/")
     # category_id = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -37,6 +39,7 @@ class RelatedProduct(models.Model):
 
 # PRODUCT HISTORY
 
+
 class PricingHistory(models.Model):
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     price = models.FloatField(null=False)
@@ -45,6 +48,7 @@ class PricingHistory(models.Model):
 
 
 # PRODUCT VENDOR
+
 
 class ProductVendor(models.Model):
     company_code = models.CharField(null=False, max_length=225)

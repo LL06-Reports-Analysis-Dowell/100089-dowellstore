@@ -37,11 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'grocery',
-    'manager',
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_yasg',
+    'grocery',
+    'manager',
+    'customer'
 ]
 
 
