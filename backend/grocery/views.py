@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from .dowellconnection1 import dowellconnection
 from .create_id import create_id
-from .models import Product, ProductCategory
+from .models import Product
 
 error_500_message = {"message": "Error processing your request, Retry"}
 
@@ -35,30 +35,15 @@ def category_list(request):
 
     post:
     Create a new category
-
+        
     parameters:
-        name: string
-        code: int
-        description: string
-        image: file
+            name: string
+            description: string
     """
 
     if request.method == "POST":
         name = request.data["name"]
-        code = request.data["code"]
         description = request.data["description"]
-
-        # Handle Product Image
-        if "category_image" in request.FILES.keys():
-            image = request.FILES["category_image"]
-            product = ProductCategory(
-                image=image, name=name, description=description, code=code
-            )
-            ProductCategory.save(product)
-
-            image_name = f"media/category/{image}"
-        else:
-            image_name = "media/yourlogo.png"
 
         test_data = {}
         category_data = dowellconnection(
@@ -75,15 +60,12 @@ def category_list(request):
         )
         json_category_data = json.loads(category_data)
 
-        cat_id = create_id(json_category_data, "category_id")
+        cat_Id = create_id(json_category_data, "categoryId")
 
         category_data = {
             "name": name,
-            "code": code,
-            "category_id": cat_id + 1,
+            "categoryId": cat_Id + 1,
             "description": description,
-            "image": image_name,
-            "products": [],
         }
 
         res = dowellconnection(
@@ -120,11 +102,15 @@ def category_list(request):
         json_data = json.loads(categories)
 
         if len(json_data["data"]) < 1:
+
             return Response({"message": "No Products Categories were found"})
+
         elif len(json_data["data"]) >= 1:
+
             return Response(json_data["data"], status=status.HTTP_200_OK)
 
         else:
+
             return Response(
                 error_500_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
@@ -132,7 +118,7 @@ def category_list(request):
 
 @api_view(["GET", "PUT", "DELETE"])
 def category_detail(request, pk):
-    field = {"category_id": int(pk)}
+    field = {"categoryId": int(pk)}
 
     if request.method == "GET":
         category = dowellconnection(
@@ -150,6 +136,7 @@ def category_detail(request, pk):
         json_data = json.loads(category)
 
         if len(json_data["data"]) < 1:
+
             return Response(
                 {"message": "The Category Requested is unavailable"},
                 status=status.HTTP_404_NOT_FOUND,
@@ -160,32 +147,19 @@ def category_detail(request, pk):
             return Response(json_data["data"], status=status.HTTP_200_OK)
 
         else:
+
             return Response(
                 error_500_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
     elif request.method == "PUT":
         name = request.data["name"]
-        code = request.data["code"]
         description = request.data["description"]
-        # Handle Product Image
-        if "category_image" in request.FILES.keys():
-            image = request.FILES["category_image"]
-            product = ProductCategory(
-                image=image, name=name, description=description, code=code
-            )
-            ProductCategory.save(product)
-
-            image_name = f"media/category/{image}"
-        else:
-            image_name = "media/yourlogo.png"
 
         update_category = {
             "name": name,
-            "code": code,
-            "category_id": pk,
+            "categoryId": pk,
             "description": description,
-            "image": image_name,
         }
 
         res = dowellconnection(
@@ -230,21 +204,8 @@ def sub_category_list(request):
     """
     if request.method == "POST":
         name = request.data["name"]
-        code = request.data["code"]
+        categoryId = request.data["categoryId"]
         description = request.data["description"]
-        parent_code = request.data["parent_code"]
-
-        # Handle Image
-        if "sub_image" in request.FILES.keys():
-            image = request.FILES["sub_image"]
-            product = ProductCategory(
-                image=image, name=name, description=description, code=code
-            )
-            ProductCategory.save(product)
-
-            image_name = f"media/category/{image}"
-        else:
-            image_name = "media/yourlogo.png"
 
         sub_cat_field = {}
 
@@ -262,15 +223,13 @@ def sub_category_list(request):
         )
         json_sub_cat_data = json.loads(sub_categories)
 
-        sub_cat_id = create_id(json_sub_cat_data, "sub_category_id")
+        sub_cat_Id = create_id(json_sub_cat_data, "subCategoryId")
 
         sub_category_data = {
             "name": name,
-            "code": code,
-            "sub_category_id": sub_cat_id + 1,
+            "subCategoryId": sub_cat_Id + 1,
             "description": description,
-            "parent_code": parent_code,
-            "image": image_name,
+            "categoryId": categoryId,
         }
 
         res = dowellconnection(
@@ -333,7 +292,7 @@ def sub_category_detail(request, pk):
 
     """
 
-    field = {"sub_category_id": pk}
+    field = {"subCategoryId": pk}
 
     if request.method == "GET":
         category = dowellconnection(
@@ -369,27 +328,14 @@ def sub_category_detail(request, pk):
 
     elif request.method == "PUT":
         sub_name = request.data["name"]
-        code = request.data["code"]
+        categoryId = request.data["categoryId"]
         description = request.data["description"]
-        parent_code = request.data["parent_code"]
-        # Handle Image
-        if "sub_image" in request.FILES.keys():
-            image = request.FILES["sub_image"]
-            product = ProductCategory(
-                image=image, name=sub_name, description=description, code=code
-            )
-            ProductCategory.save(product)
-
-            image_name = f"media/category/{image}"
-        else:
-            image_name = "media/yourlogo.png"
 
         update_sub_category = {
             "name": sub_name,
-            "code": code,
-            "sub_category_id": pk,
+            "categoryId": categoryId,
+            "subCategoryId": pk,
             "description": description,
-            "parent_code": parent_code,
         }
 
         sub_category = dowellconnection(
@@ -441,8 +387,8 @@ def product_list(request):
         sku = request.data["sku"]
         description = request.data["description"]
         price = request.data["price"]
-        category_id = request.data["category_id"]
-        vendor_id = request.data["vendor_id"]
+        categoryId = request.data["categoryId"]
+        vendorId = request.data["vendorId"]
         # Handle Product Image
         if "image" in request.FILES.keys():
             image = request.FILES["image"]
@@ -477,16 +423,16 @@ def product_list(request):
         )
         json_product_data = json.loads(product_data)
 
-        our_id = create_id(json_product_data, "product_id")
+        our_Id = create_id(json_product_data, "productId")
 
         product_data = {
-            "product_id": our_id + 1,
+            "productId": our_Id + 1,
             "name": name,
             "sku": sku,
             "description": description,
             "price": price,
-            "category_id": category_id,
-            "vendor_id": vendor_id,
+            "categoryId": categoryId,
+            "vendorId": vendorId,
             "image": image_name,
         }
         res = dowellconnection(
@@ -552,7 +498,7 @@ def product_detail(request, pk):
     Remove a product
 
     """
-    field = {"product_id": pk}
+    field = {"productId": pk}
     if request.method == "GET":
 
         product = dowellconnection(
@@ -591,8 +537,8 @@ def product_detail(request, pk):
         sku = request.data["sku"]
         description = request.data["description"]
         price = request.data["price"]
-        category_id = request.data["category_id"]
-        vendor_id = request.data["vendor_id"]
+        categoryId = request.data["categoryId"]
+        vendorId = request.data["vendorId"]
 
         # Handle Product Image
         if "image" in request.FILES.keys():
@@ -607,9 +553,9 @@ def product_detail(request, pk):
             image_name = "media/yourlogo.png"
 
         update_product = {
-            "product_id": pk,
-            "category_id": category_id,
-            "vendor_id": vendor_id,
+            "productId": pk,
+            "categoryId": categoryId,
+            "vendorId": vendorId,
             "name": name,
             "sku": sku,
             "description": description,
@@ -652,7 +598,7 @@ def product_detail(request, pk):
 @api_view(["GET"])
 def product_in_category(request, pk, product_pk):
 
-    field = {"category_id": pk, "product_id": product_pk}
+    field = {"categoryId": pk, "productId": product_pk}
 
     if request.method == "GET":
         product = dowellconnection(
@@ -689,13 +635,14 @@ def product_in_category(request, pk, product_pk):
 
 # RELATED PRODUCT ----------------------------------------------------------------------
 
+
 @api_view(["GET", "POST"])
 def related_product_list(request):
 
     field_add = {}
 
     if request.method == "POST":
-        product_id = request.data["product_id"]
+        product_Id = request.data["product_Id"]
         relevance_score = request.data["relevance_score"]
 
         product_data = dowellconnection(
@@ -712,12 +659,12 @@ def related_product_list(request):
         )
         json_product_data = json.loads(product_data)
 
-        related_id = create_id(json_product_data, "related_id")
+        related_Id = create_id(json_product_data, "relatedId")
 
         field = {
-            "related_id": related_id + 1,
-            "related_product_id": product_id,
-            "relevance_score": relevance_score,
+            "relatedId": related_Id + 1,
+            "relatedProductId": product_Id,
+            "relevanceScore": relevance_score,
         }
 
         res = dowellconnection(
@@ -767,15 +714,13 @@ def related_product_list(request):
             )
 
 
-
-
 # PRICING HISTORY ----------------------------------------------------------------------------------------------------
 @api_view(["GET", "POST"])
 def pricing_history_list(request):
     field_add = {}
 
     if request.method == "POST":
-        product_id = request.data["related_product_id"]
+        product_Id = request.data["related_product_Id"]
         price = request.data["relevance_score"]
         started_at = request.data["started_at"]
         ended_at = request.data["ended_at"]
@@ -794,11 +739,11 @@ def pricing_history_list(request):
         )
         json_pricing_data = json.loads(pricing)
 
-        pricing_id = create_id(json_pricing_data, "pricing_id")
+        pricing_Id = create_id(json_pricing_data, "pricing_Id")
 
         field = {
-            "pricing_id": pricing_id + 1,
-            "product_id": product_id,
+            "pricing_Id": pricing_Id + 1,
+            "product_Id": product_Id,
             "price": price,
             "started_at": started_at,
             "ended_at": ended_at,

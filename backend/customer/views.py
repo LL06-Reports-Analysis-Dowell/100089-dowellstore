@@ -4,10 +4,8 @@ from rest_framework import status
 from rest_framework.response import Response
 
 # To make password encryption
-from django.contrib.auth.hashers import make_password
 from grocery.dowellconnection1 import dowellconnection
 from grocery.create_id import create_id
-from .middleware import sign_token, verify
 
 error_500_message = {"message": "Error processing your request, Retry"}
 
@@ -25,11 +23,12 @@ def customer_list(request):
     if request.method == "POST":
 
         email = request.data["email"]
-        password1 = request.data["password"]
         name = request.data["name"]
         phone_number = request.data["phone_number"]
-        created_at = request.data["created_at"]
-        password = make_password(password1)
+        address_line = request.data["addressLine"]
+        city = request.data["city"]
+        postal_code = request.data["postalCode"]
+        country = request.data["country"]
 
         check_data = dowellconnection(
             "dowellstores",
@@ -45,15 +44,19 @@ def customer_list(request):
         )
         json_check_data = json.loads(check_data)
 
-        customer_id = create_id(json_check_data, "customer_id")
+        customer_id = create_id(json_check_data, "customerId")
 
         field = {
-            "customer_id": customer_id + 1,
+            "customerId": customer_id + 1,
             "name": name,
             "email": email,
-            "phone_number": phone_number,
-            "password": password,
-            "created_at": created_at,
+            "phoneNumber": phone_number,
+            "address": {
+                "addressLine": address_line,
+                "city": city,
+                "postalCode": postal_code,
+                "country": country,
+            },
         }
 
         res = dowellconnection(
@@ -112,19 +115,24 @@ def customer_detail(request, pk):
     if request.method == "PUT":
 
         email = request.data["email"]
-        password1 = request.data["password"]
         name = request.data["name"]
         phone_number = request.data["phone_number"]
-        updated_at = request.data["updated_at"]
-        password = make_password(password1)
+        address_line = request.data["addressLine"]
+        city = request.data["city"]
+        postal_code = request.data["postalCode"]
+        country = request.data["country"]
 
         update_field = {
             "customer_id": pk,
             "name": name,
             "email": email,
             "phone_number": phone_number,
-            "password": password,
-            "updated_at": updated_at,
+             "address": {
+                "addressLine": address_line,
+                "city": city,
+                "postalCode": postal_code,
+                "country": country,
+            },
         }
 
         res = dowellconnection(
@@ -175,30 +183,3 @@ def customer_detail(request, pk):
             return Response(
                 error_500_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
-
-@api_view(["POST"])
-def login(request):
-    email = request.data["email"]
-    password = request.data["password"]
-
-    user = {"email": email, "password": password}
-
-    token = sign_token(user)
-
-    return Response({"access": token})
-
-
-@api_view(["POST"])
-def is_auth(request):
-    token = request.headers["Token"]
-
-    if token:
-        try:
-            res = verify(token)
-            print(res)
-            return Response({"message": "Is authenticTE"})
-        except:
-            print("token invalid")
-    else:
-        print("Token not supplied")
