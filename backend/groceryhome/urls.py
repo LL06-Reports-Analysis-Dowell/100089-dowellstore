@@ -21,7 +21,6 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-
 schema_view = get_schema_view(
     openapi.Info(
         title="Dowell store API",
@@ -34,17 +33,18 @@ schema_view = get_schema_view(
     public=True,
     permission_classes=[permissions.AllowAny],
 )
-
 urlpatterns = [
     path("admin/", admin.site.urls),
     path(
         "v1/",
         include(
             [
-                path("", include("grocery.urls")),
-                path("", include("manager.urls")),
+                path("", include("product.urls")),
+                path("", include("vendor.urls")),
                 path("", include("customer.urls")),
                 path("", include("cart.urls")),
+                path("", include("category.urls")),
+                path("", include("order.urls")),
             ]
         ),
     ),

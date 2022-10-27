@@ -4,7 +4,7 @@ from requests import request
 from rest_framework.test import APIRequestFactory
 from rest_framework.test import APITestCase
 from rest_framework.test import RequestsClient
-from grocery import views
+from product import views
 
 # Create your tests here.
 

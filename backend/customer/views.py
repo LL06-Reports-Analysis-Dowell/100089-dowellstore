@@ -4,8 +4,8 @@ from rest_framework import status
 from rest_framework.response import Response
 
 # To make password encryption
-from grocery.dowellconnection1 import dowellconnection
-from grocery.create_id import create_id
+from product.dowellconnection1 import dowellconnection
+from product.create_id import create_id
 
 error_500_message = {"message": "Error processing your request, Retry"}
 

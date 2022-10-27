@@ -4,7 +4,6 @@ from rest_framework.decorators import api_view
 from django.http.response import JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
-
 from .dowellconnection1 import dowellconnection
 from .create_id import create_id
 from .models import Product
@@ -13,361 +12,8 @@ error_500_message = {"message": "Error processing your request, Retry"}
 
 
 # Home Routes ------------------------------------------------------------------
-
-
 def api_home(request):
     return JsonResponse({"message": "The API Endpoint is Up"})
-
-
-@api_view(["GET", "POST"])
-def hello_world(request):
-    return Response({"Message": "API decorators"})
-
-
-# CATEGORY ----------------------------------------------------------------------
-
-
-@api_view(["GET", "POST"])
-def category_list(request):
-    """
-    get:
-    Category List
-
-    post:
-    Create a new category
-        
-    parameters:
-            name: string
-            description: string
-    """
-
-    if request.method == "POST":
-        name = request.data["name"]
-        description = request.data["description"]
-
-        test_data = {}
-        category_data = dowellconnection(
-            "dowellstores",
-            "bangalore",
-            "dowellstores",
-            "ProductCategory",
-            "ProductCategory",
-            "1133",
-            "ABCDE",
-            "fetch",
-            test_data,
-            "nil",
-        )
-        json_category_data = json.loads(category_data)
-
-        cat_Id = create_id(json_category_data, "categoryId")
-
-        category_data = {
-            "name": name,
-            "categoryId": cat_Id + 1,
-            "description": description,
-        }
-
-        res = dowellconnection(
-            "dowellstores",
-            "bangalore",
-            "dowellstores",
-            "ProductCategory",
-            "ProductCategory",
-            "1133",
-            "ABCDE",
-            "insert",
-            category_data,
-            "nil",
-        )
-        data = json.loads(res)
-
-        return Response(data, status=status.HTTP_201_CREATED)
-
-    else:
-        field = {}
-        categories = dowellconnection(
-            "dowellstores",
-            "bangalore",
-            "dowellstores",
-            "ProductCategory",
-            "ProductCategory",
-            "1133",
-            "ABCDE",
-            "fetch",
-            field,
-            "nil",
-        )
-
-        json_data = json.loads(categories)
-
-        if len(json_data["data"]) < 1:
-
-            return Response({"message": "No Products Categories were found"})
-
-        elif len(json_data["data"]) >= 1:
-
-            return Response(json_data["data"], status=status.HTTP_200_OK)
-
-        else:
-
-            return Response(
-                error_500_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-
-@api_view(["GET", "PUT", "DELETE"])
-def category_detail(request, pk):
-    field = {"categoryId": int(pk)}
-
-    if request.method == "GET":
-        category = dowellconnection(
-            "dowellstores",
-            "bangalore",
-            "dowellstores",
-            "ProductCategory",
-            "ProductCategory",
-            "1133",
-            "ABCDE",
-            "fetch",
-            field,
-            "nil",
-        )
-        json_data = json.loads(category)
-
-        if len(json_data["data"]) < 1:
-
-            return Response(
-                {"message": "The Category Requested is unavailable"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        elif len(json_data["data"]) >= 1:
-
-            return Response(json_data["data"], status=status.HTTP_200_OK)
-
-        else:
-
-            return Response(
-                error_500_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-    elif request.method == "PUT":
-        name = request.data["name"]
-        description = request.data["description"]
-
-        update_category = {
-            "name": name,
-            "categoryId": pk,
-            "description": description,
-        }
-
-        res = dowellconnection(
-            "dowellstores",
-            "bangalore",
-            "dowellstores",
-            "ProductCategory",
-            "ProductCategory",
-            "1133",
-            "ABCDE",
-            "update",
-            field,
-            update_category,
-        )
-        data = json.loads(res)
-
-        return Response(data, status=status.HTTP_201_CREATED)
-
-    elif request.method == "DELETE":
-        res = dowellconnection(
-            "dowellstores",
-            "bangalore",
-            "dowellstores",
-            "ProductCategory",
-            "ProductCategory",
-            "1133",
-            "ABCDE",
-            "delete",
-            field,
-            "nil",
-        )
-        data = json.loads(res)
-        return Response(data, status=status.HTTP_204_NO_CONTENT)
-
-
-# SUB CATEGORY -------------------------------------------------------------------------------------------------------
-@api_view(["GET", "POST"])
-def sub_category_list(request):
-    """
-    This API endpoint allows creation and listing of sub-Categories.
-
-    """
-    if request.method == "POST":
-        name = request.data["name"]
-        categoryId = request.data["categoryId"]
-        description = request.data["description"]
-
-        sub_cat_field = {}
-
-        sub_categories = dowellconnection(
-            "dowellstores",
-            "bangalore",
-            "dowellstores",
-            "SubCategory",
-            "SubCategory",
-            "1134",
-            "ABCDE",
-            "fetch",
-            sub_cat_field,
-            "nil",
-        )
-        json_sub_cat_data = json.loads(sub_categories)
-
-        sub_cat_Id = create_id(json_sub_cat_data, "subCategoryId")
-
-        sub_category_data = {
-            "name": name,
-            "subCategoryId": sub_cat_Id + 1,
-            "description": description,
-            "categoryId": categoryId,
-        }
-
-        res = dowellconnection(
-            "dowellstores",
-            "bangalore",
-            "dowellstores",
-            "SubCategory",
-            "SubCategory",
-            "1134",
-            "ABCDE",
-            "insert",
-            sub_category_data,
-            "nil",
-        )
-        data = json.loads(res)
-        return Response(data, status=status.HTTP_201_CREATED)
-
-    else:
-        data_field = {}
-        sub_categories = dowellconnection(
-            "dowellstores",
-            "bangalore",
-            "dowellstores",
-            "SubCategory",
-            "SubCategory",
-            "1134",
-            "ABCDE",
-            "fetch",
-            data_field,
-            "nil",
-        )
-        json_data = json.loads(sub_categories)
-
-        if len(json_data["data"]) < 1:
-
-            return Response(
-                {"message": "No Sub Categories found."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        elif len(json_data["data"]) >= 1:
-
-            return Response(json_data["data"], status=status.HTTP_200_OK)
-
-        else:
-
-            return Response(
-                error_500_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-
-@api_view(["GET", "PUT", "DELETE"])
-def sub_category_detail(request, pk):
-    """
-    get:
-    Read a sub category
-
-    put:
-    Update a sub category
-
-    """
-
-    field = {"subCategoryId": pk}
-
-    if request.method == "GET":
-        category = dowellconnection(
-            "dowellstores",
-            "bangalore",
-            "dowellstores",
-            "SubCategory",
-            "SubCategory",
-            "1134",
-            "ABCDE",
-            "fetch",
-            field,
-            "nil",
-        )
-        json_data = json.loads(category)
-
-        if len(json_data["data"]) < 1:
-
-            return Response(
-                {"message": "No Sub Category  Not Found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        elif len(json_data["data"]) >= 1:
-
-            return Response(json_data["data"], status=status.HTTP_200_OK)
-
-        else:
-
-            return Response(
-                error_500_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-    elif request.method == "PUT":
-        sub_name = request.data["name"]
-        categoryId = request.data["categoryId"]
-        description = request.data["description"]
-
-        update_sub_category = {
-            "name": sub_name,
-            "categoryId": categoryId,
-            "subCategoryId": pk,
-            "description": description,
-        }
-
-        sub_category = dowellconnection(
-            "dowellstores",
-            "bangalore",
-            "dowellstores",
-            "SubCategory",
-            "SubCategory",
-            "1134",
-            "ABCDE",
-            "update",
-            field,
-            update_sub_category,
-        )
-        data = json.loads(sub_category)
-        return Response(data, status=status.HTTP_201_CREATED)
-
-    elif request.method == "DELETE":
-        res = dowellconnection(
-            "dowellstores",
-            "bangalore",
-            "dowellstores",
-            "SubCategory",
-            "SubCategory",
-            "1134",
-            "ABCDE",
-            "delete",
-            field,
-            "nil",
-        )
-        data = json.loads(res)
-        return Response(data, status=status.HTTP_204_NO_CONTENT)
 
 
 # PRODUCT ------------------------------------------------------------------------------------------------------------
@@ -379,35 +25,32 @@ def product_list(request):
 
     post:
     Create a new Product.
-
-
     """
     if request.method == "POST":
         name = request.data["name"]
         sku = request.data["sku"]
-        description = request.data["description"]
-        price = request.data["price"]
+        slug = name.replace(" ", "-")
+        countInStock = request.data["countInStock"]
         categoryId = request.data["categoryId"]
-        vendorId = request.data["vendorId"]
+        description = request.data["description"]
         # Handle Product Image
         if "image" in request.FILES.keys():
             image = request.FILES["image"]
             product = Product(
-                image=image, sku=sku, description=description, price=price
+                image=image,
+                sku=sku,
+                description=description,
             )
             Product.save(product)
-
             image_name = f"media/product/{image}"
         else:
             image_name = "media/yourlogo.png"
-
             # Convert Image to base64
             # Fix Some Test Failing: If the Image name has spaces
             # with open(f"media/product_images/{image}", "rb") as our_image:
             #     # print(our_image)
             #     converted_string = base64.b64encode(our_image.read())
             #     print(converted_string.decode('utf-8'))
-
         data = {}
         product_data = dowellconnection(
             "dowellstores",
@@ -422,17 +65,15 @@ def product_list(request):
             "nil",
         )
         json_product_data = json.loads(product_data)
-
         our_Id = create_id(json_product_data, "productId")
-
         product_data = {
             "productId": our_Id + 1,
             "name": name,
+            "slug": slug,
             "sku": sku,
             "description": description,
-            "price": price,
+            "countInStock": countInStock,
             "categoryId": categoryId,
-            "vendorId": vendorId,
             "image": image_name,
         }
         res = dowellconnection(
@@ -448,12 +89,9 @@ def product_list(request):
             "nil",
         )
         data = json.loads(res)
-
         return Response(data, status=status.HTTP_201_CREATED)
-
     else:
         field = {}
-
         products = dowellconnection(
             "dowellstores",
             "bangalore",
@@ -467,19 +105,13 @@ def product_list(request):
             "nil",
         )
         json_data = json.loads(products)
-
         if len(json_data["data"]) < 1:
-
             return Response(
                 {"message": "Products Not Found"}, status=status.HTTP_404_NOT_FOUND
             )
-
         elif len(json_data["data"]) >= 1:
-
             return Response(json_data["data"], status=status.HTTP_200_OK)
-
         else:
-
             return Response(
                 error_500_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
@@ -496,11 +128,9 @@ def product_detail(request, pk):
 
     delete:
     Remove a product
-
     """
     field = {"productId": pk}
     if request.method == "GET":
-
         product = dowellconnection(
             "dowellstores",
             "bangalore",
@@ -514,55 +144,43 @@ def product_detail(request, pk):
             "nil",
         )
         json_data = json.loads(product)
-
         if len(json_data["data"]) < 1:
-
             return Response(
                 {"message": "Product Not Found"}, status=status.HTTP_404_NOT_FOUND
             )
-
         elif len(json_data["data"]) >= 1:
-
-            return Response(json_data["data"], status=status.HTTP_200_OK)
-
+            return Response(status=status.HTTP_200_OK)
         else:
-
             return Response(
                 error_500_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
     elif request.method == "PUT":
-
         name = request.data["name"]
         sku = request.data["sku"]
         description = request.data["description"]
-        price = request.data["price"]
         categoryId = request.data["categoryId"]
+        slug = name.replace(" ", "-")
+        countInStock = request.data["countInStock"]
         vendorId = request.data["vendorId"]
-
         # Handle Product Image
         if "image" in request.FILES.keys():
             image = request.FILES["image"]
-            product = Product(
-                image=image, sku=sku, description=description, price=price
-            )
+            product = Product(image=image, sku=sku, description=description)
             Product.save(product)
-
             image_name = f"media/product/{image}"
         else:
             image_name = "media/yourlogo.png"
-
         update_product = {
             "productId": pk,
             "categoryId": categoryId,
             "vendorId": vendorId,
             "name": name,
             "sku": sku,
+            "slug": slug,
+            "countInStock": countInStock,
             "description": description,
-            "price": price,
             "image": image_name,
         }
-
         product = dowellconnection(
             "dowellstores",
             "bangalore",
@@ -577,7 +195,6 @@ def product_detail(request, pk):
         )
         data = json.loads(product)
         return Response(data)
-
     elif request.method == "DELETE":
         res = dowellconnection(
             "dowellstores",
@@ -591,15 +208,12 @@ def product_detail(request, pk):
             field,
             "nil",
         )
-        data = json.loads(res)
-        return Response(data, status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(["GET"])
 def product_in_category(request, pk, product_pk):
-
     field = {"categoryId": pk, "productId": product_pk}
-
     if request.method == "GET":
         product = dowellconnection(
             "dowellstores",
@@ -614,19 +228,12 @@ def product_in_category(request, pk, product_pk):
             "nil",
         )
         json_data = json.loads(product)
-
-        # print(json_data)
-
         if len(json_data) < 1:
-
             return Response(
                 {"message": "Product Not Found"}, status=status.HTTP_404_NOT_FOUND
             )
-
         elif len(json_data) >= 1:
-
             return Response(json_data, status=status.HTTP_200_OK)
-
         else:
             return Response(
                 error_500_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -634,17 +241,13 @@ def product_in_category(request, pk, product_pk):
 
 
 # RELATED PRODUCT ----------------------------------------------------------------------
-
-
 @api_view(["GET", "POST"])
 def related_product_list(request):
 
     field_add = {}
-
     if request.method == "POST":
         product_Id = request.data["product_Id"]
         relevance_score = request.data["relevance_score"]
-
         product_data = dowellconnection(
             "dowellstores",
             "bangalore",
@@ -658,15 +261,12 @@ def related_product_list(request):
             "nil",
         )
         json_product_data = json.loads(product_data)
-
         related_Id = create_id(json_product_data, "relatedId")
-
         field = {
             "relatedId": related_Id + 1,
             "relatedProductId": product_Id,
             "relevanceScore": relevance_score,
         }
-
         res = dowellconnection(
             "dowellstores",
             "bangalore",
@@ -680,11 +280,8 @@ def related_product_list(request):
             "nil",
         )
         data = json.loads(res)
-
         return Response(data, status=status.HTTP_201_CREATED)
-
     else:
-
         related_products = dowellconnection(
             "dowellstores",
             "bangalore",
@@ -697,17 +294,11 @@ def related_product_list(request):
             field_add,
             "nil",
         )
-
         json_data = json.loads(related_products)
-
         if len(json_data["data"]) < 1:
-
             return Response({"message": "No related Products were found"})
-
         elif len(json_data["data"]) >= 1:
-
             return Response(json_data["data"], status=status.HTTP_200_OK)
-
         else:
             return Response(
                 error_500_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -718,13 +309,11 @@ def related_product_list(request):
 @api_view(["GET", "POST"])
 def pricing_history_list(request):
     field_add = {}
-
     if request.method == "POST":
         product_Id = request.data["related_product_Id"]
         price = request.data["relevance_score"]
         started_at = request.data["started_at"]
         ended_at = request.data["ended_at"]
-
         pricing = dowellconnection(
             "dowellstores",
             "bangalore",
@@ -738,9 +327,7 @@ def pricing_history_list(request):
             "nil",
         )
         json_pricing_data = json.loads(pricing)
-
         pricing_Id = create_id(json_pricing_data, "pricing_Id")
-
         field = {
             "pricing_Id": pricing_Id + 1,
             "product_Id": product_Id,
@@ -748,7 +335,6 @@ def pricing_history_list(request):
             "started_at": started_at,
             "ended_at": ended_at,
         }
-
         res = dowellconnection(
             "dowellstores",
             "bangalore",
@@ -762,11 +348,8 @@ def pricing_history_list(request):
             "nil",
         )
         data = json.loads(res)
-
         return Response(data, status=status.HTTP_201_CREATED)
-
     else:
-
         pricing = dowellconnection(
             "dowellstores",
             "bangalore",
@@ -779,17 +362,11 @@ def pricing_history_list(request):
             field_add,
             "nil",
         )
-
         json_data = json.loads(pricing)
-
         if len(json_data["data"]) < 1:
-
             return Response({"message": "No pricing history was found"})
-
         elif len(json_data["data"]) >= 1:
-
             return Response(json_data["data"], status=status.HTTP_200_OK)
-
         else:
             return Response(
                 error_500_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR

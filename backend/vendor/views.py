@@ -6,8 +6,8 @@ from rest_framework.response import Response
 
 # To make password encryption
 from django.contrib.auth.hashers import make_password
-from grocery.dowellconnection1 import dowellconnection
-from grocery.create_id import create_id
+from product.dowellconnection1 import dowellconnection
+from product.create_id import create_id
 
 error_500_message = {"message": "Error processing your request, Retry"}
 
@@ -25,7 +25,6 @@ def home(request):
         customer_language = request.POST["customer_language"]
         payment_option = request.POST["payment_option"]
         brand_logo = request.POST["brand_logo"]
-
         field = {
             "brand_name": brand_name,
             "industry": industry,
@@ -38,11 +37,8 @@ def home(request):
             "payment_option": payment_option,
             "brand_logo": brand_logo,
         }
-
         print(field)
-
         # res = dowellconnection()
-
     return render(request, "manager/index.html")
 
 
@@ -50,9 +46,7 @@ def home(request):
 @api_view(["GET", "POST"])
 def vendor_list(request):
     field_add = {}
-
     if request.method == "POST":
-
         name = request.data["name"]
         email = request.data["email"]
         description = request.data["description"]
@@ -63,7 +57,6 @@ def vendor_list(request):
         address_state = request.data["address_state"]
         address_postal_code = request.data["address_postal_code"]
         address_country_code = request.data["address_country_code"]
-
         check_data = dowellconnection(
             "dowellstores",
             "bangalore",
@@ -78,11 +71,9 @@ def vendor_list(request):
         )
         json_check_data = json.loads(check_data)
         print(json_check_data)
-
         vendor_id = create_id(json_check_data, "vendor_id")
-
         field = {
-            "vendor_id": vendor_id + 1,
+            "vendorId": vendor_id + 1,
             "name": name,
             "email": email,
             "description": description,
@@ -94,7 +85,6 @@ def vendor_list(request):
             "address_postal_code": address_postal_code,
             "address_country_code": address_country_code,
         }
-
         res = dowellconnection(
             "dowellstores",
             "bangalore",
@@ -108,11 +98,8 @@ def vendor_list(request):
             "nil",
         )
         res1 = json.loads(res)
-
         return Response(res1, status=status.HTTP_201_CREATED)
-
     else:
-
         data = dowellconnection(
             "dowellstores",
             "bangalore",
@@ -126,19 +113,13 @@ def vendor_list(request):
             "nil",
         )
         json_data = json.loads(data)
-
         if len(json_data["data"]) < 1:
-
             return Response(
                 {"message": "No vendors were found"}, status=status.HTTP_404_NOT_FOUND
             )
-
         elif len(json_data["data"]) >= 1:
-
             return Response(json_data["data"], status=status.HTTP_200_OK)
-
         else:
-
             return Response(
                 error_500_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
@@ -147,9 +128,7 @@ def vendor_list(request):
 @api_view(["GET", "PUT"])
 def vendor_detail(request, pk):
     field = {"vendor_id": pk}
-
     if request.method == "PUT":
-
         name = request.data["name"]
         email = request.data["email"]
         description = request.data["description"]
@@ -174,7 +153,6 @@ def vendor_detail(request, pk):
             "address_postal_code": address_postal_code,
             "address_country_code": address_country_code,
         }
-
         res = dowellconnection(
             "dowellstores",
             "bangalore",
@@ -188,11 +166,8 @@ def vendor_detail(request, pk):
             update_field,
         )
         res1 = json.loads(res)
-
         return Response(res1, status=status.HTTP_200_OK)
-
     else:
-
         customer = dowellconnection(
             "dowellstores",
             "bangalore",
@@ -206,20 +181,14 @@ def vendor_detail(request, pk):
             "nil",
         )
         json_data = json.loads(customer)
-
         if len(json_data["data"]) < 1:
-
             return Response(
                 {"message": "Vendor Profile Requested Not Found!"},
                 status=status.HTTP_404_NOT_FOUND,
             )
-
         elif len(json_data["data"]) >= 1:
-
             return Response(json_data["data"], status=status.HTTP_200_OK)
-
         else:
-
             return Response(
                 error_500_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
